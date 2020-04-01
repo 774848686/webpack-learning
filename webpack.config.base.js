@@ -19,26 +19,6 @@ const md = require('./util/readMdSyn');
  * 思考：为什么npm run dev 没有生成对应的js以及css文件，却能访问到对用的资源；是因为webpack将其放入到了缓存中；
  */
 module.exports = {
-  devServer: {
-    port: 3001,
-    progress: true,
-    before(app){ //这个钩子函数可以做到 请求express 内置服务进行数据模拟
-      app.get('/api/user',(req,res)=>{
-        res.json({name:'test-proxy-before'})
-    })
-    },
-    // webpack-dev-server服务将http://localhost:3001/api/user 转发给 http://localhost:3000/api/user
-    // proxy:{
-    //   '/api':{
-    //     target:'http://localhost:3000',
-    //     pathReWrite:{
-    //       '/api':'/api'
-    //     }
-    //   },
-    // }
-    // open: true
-  },
-  mode: 'production', // 模式，默认两种 production和 development
   entry: './src/index.js', // 入口
   devtool: 'source-map',
   // source-map 打包后，对出错信息进行文件映射 方便调试源码

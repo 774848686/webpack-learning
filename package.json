@@ -5,8 +5,8 @@
   "author": "devin",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server",
-    "build": "webpack --config webpack.config.js"
+    "dev": "webpack-dev-server --config webpack.config.dev.js",
+    "build": "webpack --config webpack.config.prod.js"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
