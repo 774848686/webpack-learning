@@ -8,6 +8,7 @@ class A{
 }
 console.log([1,2].includes(1))
 
+
 // 图片的引入 
 //  1. js引入
 // file-loader 默认会将内部生成一张图片 到dist 目录下
@@ -16,3 +17,12 @@ console.log([1,2].includes(1))
 let image = new Image();
 image.src=testImg;
 document.body.appendChild(image);
+
+// ajax 请求
+let xhr = new XMLHttpRequest();
+// xhr.open('GET','http://localhost:3000/api/user',true);//浏览器的同源策略，会不允许跨域但是请求已经发出 Access to XMLHttpRequest at 'http://localhost:3000/api/user' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+xhr.open('GET','/api/user',true);
+xhr.onload=()=>{
+    console.log(xhr.response)
+}
+xhr.send();

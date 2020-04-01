@@ -22,6 +22,20 @@ module.exports = {
   devServer: {
     port: 3001,
     progress: true,
+    before(app){ //这个钩子函数可以做到 请求express 内置服务进行数据模拟
+      app.get('/api/user',(req,res)=>{
+        res.json({name:'test-proxy-before'})
+    })
+    },
+    // webpack-dev-server服务将http://localhost:3001/api/user 转发给 http://localhost:3000/api/user
+    // proxy:{
+    //   '/api':{
+    //     target:'http://localhost:3000',
+    //     pathReWrite:{
+    //       '/api':'/api'
+    //     }
+    //   },
+    // }
     // open: true
   },
   mode: 'production', // 模式，默认两种 production和 development
@@ -39,6 +53,12 @@ module.exports = {
     filename: 'js/main.[hash].js', // 打包后的文件名
     path: path.resolve(__dirname, 'dist'), // 路径必须是一个绝对
     publicPath: '/' // dev 环境下'/' 打包时候要用其他 比如'./'
+  },
+  resolve:{
+    extensions:['.js','.css','.vue'],// 引入一个不带后缀名的文件，让其从js开始找，如果找不到就下一个
+    alias:{
+      '@':'./src'
+    }
   },
   module: {
     rules: [{
@@ -139,7 +159,6 @@ module.exports = {
             return str += md[key]+' '
           }
         })
-        console.log('---------', str)
         return str;
       },
       // include: '',
