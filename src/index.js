@@ -5,6 +5,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn'; //手动引入
 import React from 'react';
 import {render} from 'react-dom';
+import clac from './test.js';
 const testStr = 'zdf';
 // 解析es6 + 的高级语法配置
 class A{
@@ -39,3 +40,15 @@ console.log(t);
 
 // react react-dom 等框架一些代码不需要进行多次解析打包
 render('jsx',window.root)
+
+// import 在生产环境下会自动去掉没用的代码，而require 不会删除没用的代码
+// let clac = require('./test.js') es6模块会将结果挂在default上面 
+// tree-shaking 把没用的代码 自动删除
+console.log(clac.sum(1,2));
+
+// scope hosting 作用域提升
+let a = 1；
+let b= 2;
+let c = 3;
+let d = a+b+c;
+console.log(d); // 在webpack中自动简化一些代码；避免浏览器多次申明不必要的变量
