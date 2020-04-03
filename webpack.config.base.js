@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'); //注意使用这个插件时候 要手动对js进行压缩（terser-webpack-plugin）
 const TerserJSPlugin = require('terser-webpack-plugin');
+const HappyPack = require('happypack');//优化项：开启多线程进行loader解析
 const {
   CleanWebpackPlugin
 } = require('clean-webpack-plugin');
@@ -52,9 +53,8 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        use: [{
-          loader: 'babel-loader',
-        }],
+           //把对.js 的文件处理交给id为happyBabel 的HappyPack 的实例执行
+           loader: 'happypack/loader?id=js',
         exclude: /(node_modules)/ // 优化项：排除某些目录的解析 对应的是include:path.resolve(__dirname, 'src')
       },
       {
@@ -162,7 +162,17 @@ module.exports = {
     new webpack.DllReferencePlugin({
       // 描述 lodash 动态链接库的文件内容
       manifest: require('./public/dll/vendor.manifest')
-    })
+    }),
+    new HappyPack({
+      //用id来标识 happypack处理那里类文件
+    id: 'js',
+    //如何处理  用法和loader 的配置一样
+    use: [{
+      loader: 'babel-loader',
+    }],
+    //允许 HappyPack 输出日志
+    verbose: true,
+  })
 
   ]
 }
