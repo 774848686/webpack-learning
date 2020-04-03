@@ -9,6 +9,7 @@ const {
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const md = require('./util/readMdSyn');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin'); //优化项：将vendor到包好自动插入到html中
 /**
  *  webpack的几个小插件:
  *    cleanWebpackPlugin //清除文件
@@ -32,15 +33,17 @@ module.exports = {
   output: {
     filename: 'js/main.[hash].js', // 打包后的文件名
     path: path.resolve(__dirname, 'dist'), // 路径必须是一个绝对
-    publicPath: '/' // dev 环境下'/' 打包时候要用其他 比如'./'
+    publicPath: '/', // dev 环境下'/' 打包时候要用其他 比如'./'
+    library: '_dll_[name]'
   },
-  resolve:{
-    extensions:['.js','.css','.vue'],// 引入一个不带后缀名的文件，让其从js开始找，如果找不到就下一个
-    alias:{
-      '@':'./src'
+  resolve: {
+    extensions: ['.js', '.css', '.vue'], // 引入一个不带后缀名的文件，让其从js开始找，如果找不到就下一个
+    alias: {
+      '@': './src'
     }
   },
   module: {
+    noParse: /jquery/, //优化项：解析的时候不去解析第三方依赖
     rules: [{
         test: /\.html$/,
         use: [{
@@ -52,7 +55,7 @@ module.exports = {
         use: [{
           loader: 'babel-loader',
         }],
-        exclude: /(node_modules)/
+        exclude: /(node_modules)/ // 优化项：排除某些目录的解析 对应的是include:path.resolve(__dirname, 'src')
       },
       {
         test: /.md$/,
@@ -106,6 +109,7 @@ module.exports = {
   },
   //放置webpack 所有的插件
   plugins: [
+    new webpack.IgnorePlugin(/\.\/locale/, /moment/), // 优化项：可以对第三方库引入的一些文件包进行忽略，比如 moment.js 是支持多语言的；引入时会有语言包的引入；可以用此插件进行忽略，然后手动引入所需安装包
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
@@ -136,13 +140,29 @@ module.exports = {
         let str = ' ';
         Object.keys(md).map(key => {
           if (key !== 'content') {
-            return str += md[key]+' '
+            return str += md[key] + ' '
           }
         })
         return str;
       },
       // include: '',
       // exclude: '',
+    }),
+    // 优化项： 给定的 JS 或 CSS 文件添加到 webpack 配置的文件中，并将其放入资源列表 html webpack插件注入到生成的 html 中。
+    new AddAssetHtmlPlugin([
+      {
+      // 要添加到编译中的文件的绝对路径
+      filepath: path.resolve(__dirname, './public/dll/_dll_vendor.js'),
+      publicPath: './dll', //配置html 插入的路径位置
+      outputPath: './dll', // 输出的位置   
+      hash: true,
+      includeSourcemap: false
+    }]),
+    //优化项： 告诉 Webpack 使用动态链接库
+    new webpack.DllReferencePlugin({
+      // 描述 lodash 动态链接库的文件内容
+      manifest: require('./public/dll/vendor.manifest')
     })
+
   ]
 }

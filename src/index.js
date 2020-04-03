@@ -1,6 +1,10 @@
 import './index.css';
 import './index.less';
 import testImg from '../assets/images/test.png'
+import moment from 'moment';
+import 'moment/locale/zh-cn'; //手动引入
+import React from 'react';
+import {render} from 'react-dom';
 const testStr = 'zdf';
 // 解析es6 + 的高级语法配置
 class A{
@@ -26,3 +30,12 @@ xhr.onload=()=>{
     console.log(xhr.response)
 }
 xhr.send();
+
+
+// IgnorePlugin 插件演示案例
+moment.locale('zh-cn');
+const t = moment().format('MMMM Do YYYY, h:mm:ss a');
+console.log(t);
+
+// react react-dom 等框架一些代码不需要进行多次解析打包
+render('jsx',window.root)
