@@ -106,6 +106,20 @@ module.exports = {
   // 优化项
   optimization: {
     minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
+    //优化项： 多页面的公共代码抽离出来
+    // splittChunks:{ // 分割代码块
+    //   cacheGroup:{
+    //     chunks:'initial',
+    //     minSize:0,
+    //     minChunks:2,// 至少使用2次进行抽离
+    //   },
+    //   vender:{
+    //     priority:1,// 权重
+    //     test:/node_modules/,//抽离
+    //     minSize:0,
+    //     minChunks:2,// 至少使用2次进行抽离
+    //   }
+    // }
   },
   //放置webpack 所有的插件
   plugins: [
