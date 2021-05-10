@@ -48,7 +48,7 @@
   ],
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "marked": "^0.8.2",
     "moment": "^2.24.0",
     "react": "^16.13.1",
